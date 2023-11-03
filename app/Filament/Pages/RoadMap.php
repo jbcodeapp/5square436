@@ -22,6 +22,8 @@ class RoadMap extends Page implements HasForms
     protected static ?string $slug = 'road-map';
 
     protected static ?int $navigationSort = 5;
+    protected static bool $shouldRegisterNavigation = false;
+
 
     public $project;
 

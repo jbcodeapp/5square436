@@ -16,7 +16,10 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('ticket_id')->constrained('tickets');
             $table->foreignId('user_id')->constrained('users');
-            $table->float('value');
+            $table->float('value')->nullable();
+            $table->boolean('status')->default(false);
+            $table->dateTime('start_time')->nullable();
+            $table->dateTime('end_time')->nullable();
             $table->timestamps();
         });
     }

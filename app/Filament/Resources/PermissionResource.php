@@ -18,6 +18,8 @@ class PermissionResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-check';
 
     protected static ?int $navigationSort = 2;
+    protected static bool $shouldRegisterNavigation = false;
+
 
     protected static function getNavigationLabel(): string
     {

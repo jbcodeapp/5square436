@@ -15,11 +15,11 @@ class DefaultUserSeeder extends Seeder
      */
     public function run()
     {
-        if (User::where('email', 'john.doe@helper.app')->count() == 0) {
+        if (User::where('email', 'admin@admin.com')->count() == 0) {
             $user = User::create([
-                'name' => 'John DOE',
-                'email' => 'john.doe@helper.app',
-                'password' => bcrypt('Passw@rd'),
+                'name' => 'Super Admin',
+                'email' => 'admin@admin.com',
+                'password' => bcrypt('password'),
                 'email_verified_at' => now()
             ]);
             $user->creation_token = null;

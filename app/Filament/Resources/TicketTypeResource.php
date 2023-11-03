@@ -20,6 +20,8 @@ class TicketTypeResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-check';
 
     protected static ?int $navigationSort = 1;
+    protected static bool $shouldRegisterNavigation = false;
+
 
     protected static function getNavigationLabel(): string
     {

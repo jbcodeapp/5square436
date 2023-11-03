@@ -5,9 +5,12 @@ namespace App\Filament\Resources\TicketResource\Pages;
 use App\Exports\TicketHoursExport;
 use App\Filament\Resources\TicketResource;
 use App\Models\Activity;
+use App\Models\Ticket;
+use App\Models\TicketActivity;
 use App\Models\TicketComment;
 use App\Models\TicketHour;
 use App\Models\TicketSubscriber;
+use Carbon\Carbon;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -21,6 +24,7 @@ use Filament\Pages\Actions;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Facades\Excel;
+use phpDocumentor\Reflection\Types\This;
 
 class ViewTicket extends ViewRecord implements HasForms
 {
@@ -45,45 +49,69 @@ class ViewTicket extends ViewRecord implements HasForms
     protected function getActions(): array
     {
         return [
-            Actions\Action::make('toggleSubscribe')
-                ->label(
-                    fn() => $this->record->subscribers()->where('users.id', auth()->user()->id)->count() ?
-                        __('Unsubscribe')
-                        : __('Subscribe')
-                )
-                ->color(
-                    fn() => $this->record->subscribers()->where('users.id', auth()->user()->id)->count() ?
-                        'danger'
-                        : 'success'
-                )
+//            Actions\Action::make('toggleSubscribe')
+//                ->label(
+//                    fn() => $this->record->subscribers()->where('users.id', auth()->user()->id)->count() ?
+//                        __('Unsubscribe')
+//                        : __('Subscribe')
+//                )
+//                ->color(
+//                    fn() => $this->record->subscribers()->where('users.id', auth()->user()->id)->count() ?
+//                        'danger'
+//                        : 'success'
+//                )
+//                ->icon('heroicon-o-bell')
+//                ->button()
+//                ->action(function () {
+//                    if (
+//                        $sub = TicketSubscriber::where('user_id', auth()->user()->id)
+//                            ->where('ticket_id', $this->record->id)
+//                            ->first()
+//                    ) {
+//                        $sub->delete();
+//                        $this->notify('success', __('You unsubscribed from the ticket'));
+//                    } else {
+//                        TicketSubscriber::create([
+//                            'user_id' => auth()->user()->id,
+//                            'ticket_id' => $this->record->id
+//                        ]);
+//                        $this->notify('success', __('You subscribed to the ticket'));
+//                    }
+//                    $this->record->refresh();
+//                }),
+
+//  ================ Submit Ticket start==================== //
+            Actions\Action::make('submitTicket')
+                ->label(__('Submit Ticket'))
                 ->icon('heroicon-o-bell')
-                ->button()
+                ->color('warning')
+                ->modalWidth('sm')
+                ->modalHeading(__('Submit your ticket to Reviewer'))
+//                ->modalSubheading(__('Use the following form to add your comments in this ticket.'))
+                ->visible(fn() => in_array(auth()->user()->id, [$this->record->responsible_id]))
+                ->hidden(fn () => $this->record->status_id != 2)
                 ->action(function () {
-                    if (
-                        $sub = TicketSubscriber::where('user_id', auth()->user()->id)
-                            ->where('ticket_id', $this->record->id)
-                            ->first()
-                    ) {
-                        $sub->delete();
-                        $this->notify('success', __('You unsubscribed from the ticket'));
-                    } else {
-                        TicketSubscriber::create([
+                    $hourLogged = TicketHour::where('user_id', auth()->user()->id)
+                        ->where('ticket_id', $this->record->id)
+                        ->latest()->first();
+                    if($hourLogged->count() > 0 && $hourLogged->status != 1) {
+                        Ticket::where('id', $this->record->id)->update(['status_id'=> 5]);
+                        TicketActivity::create([
                             'user_id' => auth()->user()->id,
-                            'ticket_id' => $this->record->id
+                            'ticket_id' => $this->record->id,
+                            'old_status_id' => 2,
+                            'new_status_id' => 5,
                         ]);
-                        $this->notify('success', __('You subscribed to the ticket'));
+                        $this->notify('success', __('Your work send to Reviewer'));
+                    } else {
+                        $this->notify('danger', __('Please start/stop timer first'));
                     }
                     $this->record->refresh();
-                }),
-            Actions\Action::make('share')
-                ->label(__('Share'))
-                ->color('secondary')
-                ->button()
-                ->icon('heroicon-o-share')
-                ->action(fn() => $this->dispatchBrowserEvent('shareTicket', [
-                    'url' => route('filament.resources.tickets.share', $this->record->code)
-                ])),
-            Actions\EditAction::make(),
+                })
+                ->requiresConfirmation(),
+// ================ Submit Ticket end ==================== //
+
+// ================ Review Ticket start ==================== //
             Actions\Action::make('logHours')
                 ->label(__('Log time'))
                 ->icon('heroicon-o-clock')
@@ -117,7 +145,7 @@ class ViewTicket extends ViewRecord implements HasForms
                     $comment = $data['comment'];
                     TicketHour::create([
                         'ticket_id' => $this->record->id,
-                        'activity_id' => $data['activity_id'],
+//                        'activity_id' => $data['activity_id'],
                         'user_id' => auth()->user()->id,
                         'value' => $value,
                         'comment' => $comment
@@ -125,6 +153,167 @@ class ViewTicket extends ViewRecord implements HasForms
                     $this->record->refresh();
                     $this->notify('success', __('Time logged into ticket'));
                 }),
+
+            Actions\Action::make('reviewTicket')
+                ->label(__('Ticket Review'))
+                ->icon('heroicon-o-bell')
+                ->color('warning')
+                ->modalWidth('sm')
+                ->modalHeading(__('Enter your review for this ticket'))
+//                ->modalSubheading()
+                ->modalSubheading(__('Use the following form to add your worked time in this ticket.'))
+                ->modalButton(__('Submit'))
+                ->visible(fn() =>
+                    in_array(auth()->user()->id, [$this->record->owner_id, $this->record->responsible_id]) &&
+                    (in_array($this->record->status_id, [3, 4, 5]))
+                )
+                ->hidden(fn () => $this->record->owner_id != auth()->user()->id)
+                ->form([
+                    Textarea::make('review')
+                        ->label(__('Review'))
+                        ->rows(3),
+                ])
+                ->action(function () {
+                    $hourLogged = TicketHour::where('user_id', auth()->user()->id)
+                        ->where('ticket_id', $this->record->id)
+                        ->latest()->first();
+                    if($hourLogged->count() > 0 && $hourLogged->status != 1) {
+                        Ticket::where('id', $this->record->id)->update(['status_id'=> 5]);
+                        TicketActivity::create([
+                            'user_id' => auth()->user()->id,
+                            'ticket_id' => $this->record->id,
+                            'old_status_id' => 2,
+                            'new_status_id' => 5,
+                        ]);
+                        $this->notify('success', __('Your work send to Reviewer'));
+                    } else {
+                        $this->notify('danger', __('Please start/stop timer first'));
+                    }
+                    $this->record->refresh();
+                })
+                ->requiresConfirmation(),
+// ================ Review Ticket end ==================== //
+
+// ================ Timer start ==================== //
+            Actions\Action::make('toggleStartTime')
+                ->label(
+                    fn() => (
+                        $this->record->hours()->count() > 0 &&
+                        in_array(auth()->user()->id, [$this->record->owner_id, $this->record->responsible_id]) &&
+                        $this->record->hours()
+                            ->where('user_id', auth()->user()->id)
+                            ->where('ticket_id', $this->record->id)->latest()->first() != null &&
+                        $this->record->hours()
+                            ->where('user_id', auth()->user()->id)
+                            ->where('ticket_id', $this->record->id)->latest()->first()->status == 1
+                    )
+                        ? __('End Time')
+                        : __('Start Time')
+                )
+                ->color(
+                    fn() => ($this->record->hours()->count() > 0 && $this->record->hours()
+                            ->where('user_id', auth()->user()->id)
+                            ->where('ticket_id', $this->record->id)->latest()->first() != null &&
+                        $this->record->hours()
+                            ->where('user_id', auth()->user()->id)
+                            ->where('ticket_id', $this->record->id)->latest()->first()->status == 1
+                    )
+                        ? __('danger')
+                        : __('success')
+                )
+                ->visible(fn() =>
+                in_array(auth()->user()->id, [$this->record->responsible_id]) &&
+                (in_array($this->record->status_id, [1, 2]))
+                )
+                ->icon('heroicon-o-clock')
+                ->button()
+                ->action(function () {
+                    $timer = TicketHour::where('user_id', auth()->user()->id)
+                        ->where('ticket_id', $this->record->id)
+                        ->latest()->first();
+                    if ($timer != null && $timer->status == 1) {
+                            $start = Carbon::parse($timer->start_time);
+                            $end = Carbon::now();
+                            $diff = $start->diff($end)->format('%H.%I');
+                            $timer->update([
+                                'value' => $diff,
+                                'end_time' => now(),
+                                'status' => 0,
+                            ]);
+                            $this->notify('success', __('Your timer ended'));
+                    } else {
+                        Ticket::where('id', $this->record->id)->update(['status_id'=> 2]);
+                        TicketHour::create([
+                            'user_id' => auth()->user()->id,
+                            'ticket_id' => $this->record->id,
+                            'status' => true,
+                            'start_time' => now()
+                        ]);
+                        TicketActivity::create([
+                            'user_id' => auth()->user()->id,
+                            'ticket_id' => $this->record->id,
+                            'old_status_id' => 1,
+                            'new_status_id' => 2,
+                        ]);
+                        $this->notify('success', __('Your timer started'));
+                    }
+                    $this->record->refresh();
+                }),
+// ================ Timer end ==================== //
+
+//            Actions\Action::make('share')
+//                ->label(__('Share'))
+//                ->color('secondary')
+//                ->button()
+//                ->icon('heroicon-o-share')
+//                ->action(fn() => $this->dispatchBrowserEvent('shareTicket', [
+//                    'url' => route('filament.resources.tickets.share', $this->record->code)
+//                ])),
+
+            Actions\EditAction::make(),
+
+//            Actions\Action::make('logHours')
+//                ->label(__('Log time'))
+//                ->icon('heroicon-o-clock')
+//                ->color('warning')
+//                ->modalWidth('sm')
+//                ->modalHeading(__('Log worked time'))
+//                ->modalSubheading(__('Use the following form to add your worked time in this ticket.'))
+//                ->modalButton(__('Log'))
+//                ->visible(fn() => in_array(
+//                    auth()->user()->id,
+//                    [$this->record->owner_id, $this->record->responsible_id]
+//                ))
+//                ->form([
+//                    TextInput::make('time')
+//                        ->label(__('Time to log'))
+//                        ->numeric()
+//                        ->required(),
+//                    Select::make('activity_id')
+//                        ->label(__('Activity'))
+//                        ->searchable()
+//                        ->reactive()
+//                        ->options(function ($get, $set) {
+//                            return Activity::all()->pluck('name', 'id')->toArray();
+//                        }),
+//                    Textarea::make('comment')
+//                        ->label(__('Comment'))
+//                        ->rows(3),
+//                ])
+//                ->action(function (Collection $records, array $data): void {
+//                    $value = $data['time'];
+//                    $comment = $data['comment'];
+//                    TicketHour::create([
+//                        'ticket_id' => $this->record->id,
+////                        'activity_id' => $data['activity_id'],
+//                        'user_id' => auth()->user()->id,
+//                        'value' => $value,
+//                        'comment' => $comment
+//                    ]);
+//                    $this->record->refresh();
+//                    $this->notify('success', __('Time logged into ticket'));
+//                }),
+
             Actions\ActionGroup::make([
                 Actions\Action::make('exportLogHours')
                     ->label(__('Export time logged'))

@@ -37,29 +37,40 @@ class TimeLogged extends Component implements HasTable
                 ->formatStateUsing(fn($record) => view('components.user-avatar', ['user' => $record->user]))
                 ->searchable(),
 
-            Tables\Columns\TextColumn::make('value')
-                ->label(__('Hours'))
-                ->sortable()
-                ->searchable(),
-            Tables\Columns\TextColumn::make('comment')
-                ->label(__('Comment'))
-                ->limit(50)
-                ->sortable()
-                ->searchable(),
-
-            Tables\Columns\TextColumn::make('activity.name')
-                ->label(__('Activity'))
-                ->sortable(),
-
-            Tables\Columns\TextColumn::make('ticket.name')
-                ->label(__('Ticket'))
-                ->sortable(),
-
-            Tables\Columns\TextColumn::make('created_at')
-                ->label(__('Created at'))
+            Tables\Columns\TextColumn::make('start_time')
+                ->label(__('Start Time'))
                 ->dateTime()
+                ->sortable(),
+
+            Tables\Columns\TextColumn::make('end_time')
+                ->label(__('End Time'))
+                ->dateTime()
+                ->sortable(),
+
+            Tables\Columns\TextColumn::make('value')
+                ->label(__('Logged Hours'))
                 ->sortable()
                 ->searchable(),
+
+//            Tables\Columns\TextColumn::make('comment')
+//                ->label(__('Comment'))
+//                ->limit(50)
+//                ->sortable()
+//                ->searchable(),
+//
+//            Tables\Columns\TextColumn::make('activity.name')
+//                ->label(__('Activity'))
+//                ->sortable(),
+
+//            Tables\Columns\TextColumn::make('ticket.name')
+//                ->label(__('Ticket'))
+//                ->sortable(),
+
+//            Tables\Columns\TextColumn::make('created_at')
+//                ->label(__('Created at'))
+//                ->dateTime()
+//                ->sortable()
+//                ->searchable(),
         ];
     }
 }

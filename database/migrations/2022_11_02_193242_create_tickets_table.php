@@ -17,10 +17,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->longText('content');
+            $table->boolean('is_repeat')->default(false);
             $table->foreignId('owner_id')->constrained('users');
             $table->foreignId('responsible_id')->nullable()->constrained('users');
             $table->foreignId('status_id')->constrained('ticket_statuses');
             $table->foreignId('project_id')->constrained('projects');
+            $table->timestamp('target_date')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

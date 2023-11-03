@@ -18,6 +18,8 @@ class ActivityResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-clipboard';
 
     protected static ?int $navigationSort = 1;
+    protected static bool $shouldRegisterNavigation = false;
+
 
     protected static function getNavigationLabel(): string
     {

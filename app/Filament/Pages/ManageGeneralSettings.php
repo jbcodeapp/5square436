@@ -20,10 +20,13 @@ class ManageGeneralSettings extends SettingsPage
     protected static ?string $navigationIcon = 'heroicon-o-cog';
 
     protected static string $settings = GeneralSettings::class;
+    protected static ?int $navigationSort = 6;
+    //protected static bool $shouldRegisterNavigation = false;
+
 
     protected static function shouldRegisterNavigation(): bool
     {
-        return auth()->user()->can('Manage general settings');
+        return false; //auth()->user()->can('Manage general settings');
     }
 
     protected function getHeading(): string|Htmlable
@@ -36,10 +39,10 @@ class ManageGeneralSettings extends SettingsPage
         return __('General');
     }
 
-    protected static function getNavigationGroup(): ?string
-    {
-        return __('Settings');
-    }
+//    protected static function getNavigationGroup(): ?string
+//    {
+//        return __('Settings');
+//    }
 
     protected function getFormSchema(): array
     {

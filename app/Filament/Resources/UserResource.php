@@ -19,7 +19,7 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 6;
 
     protected static function getNavigationLabel(): string
     {
@@ -31,10 +31,10 @@ class UserResource extends Resource
         return static::getNavigationLabel();
     }
 
-    protected static function getNavigationGroup(): ?string
-    {
-        return __('Permissions');
-    }
+//    protected static function getNavigationGroup(): ?string
+//    {
+//        return __('Permissions');
+//    }
 
     public static function form(Form $form): Form
     {
@@ -89,15 +89,15 @@ class UserResource extends Resource
                     ->label(__('Roles'))
                     ->limit(2),
 
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->label(__('Email verified at'))
-                    ->dateTime()
-                    ->sortable()
-                    ->searchable(),
+//                Tables\Columns\TextColumn::make('email_verified_at')
+//                    ->label(__('Email verified at'))
+//                    ->dateTime()
+//                    ->sortable()
+//                    ->searchable(),
 
-                Tables\Columns\TextColumn::make('socials')
-                    ->label(__('Linked social networks'))
-                    ->view('partials.filament.resources.social-icon'),
+//                Tables\Columns\TextColumn::make('socials')
+//                    ->label(__('Linked social networks'))
+//                    ->view('partials.filament.resources.social-icon'),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('Created at'))

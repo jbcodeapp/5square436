@@ -30,6 +30,7 @@ class JiraImport extends Page implements HasForms
 
     protected static ?int $navigationSort = 2;
 
+
     protected $listeners = [
         'updateJiraProjects',
         'updateJiraTickets'
@@ -54,7 +55,7 @@ class JiraImport extends Page implements HasForms
 
     protected static function shouldRegisterNavigation(): bool
     {
-        return auth()->user()->can('Import from Jira');
+        return false; //auth()->user()->can('Import from Jira');
     }
 
     protected function getSubheading(): string|Htmlable|null

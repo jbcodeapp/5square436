@@ -23,7 +23,7 @@ class TicketHoursExport implements FromCollection, WithHeadings
             'Ticket',
             'User',
             'Time',
-            'Hours',
+//            'Hours',
             'Activity',
             'Date',
             'Comment',
@@ -41,7 +41,7 @@ class TicketHoursExport implements FromCollection, WithHeadings
                 'ticket' => $item->ticket->name,
                 'user' => $item->user->name,
                 'time' => $item->forHumans,
-                'hours' => number_format($item->value, 2, ',', ' '),
+//                'hours' => number_format($item->value, 2, ',', ' '),
                 'activity' => $item->activity ? $item->activity->name : '-',
                 'date' => $item->created_at->format(__('Y-m-d g:i A')),
                 'comment' => $item->comment

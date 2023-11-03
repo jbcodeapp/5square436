@@ -5,7 +5,9 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\TimesheetResource\Pages;
 use App\Filament\Resources\TimesheetResource\RelationManagers;
 use App\Models\Activity;
+use App\Models\Ticket;
 use App\Models\TicketHour;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
@@ -21,7 +23,8 @@ class TimesheetResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-badge-check';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 7;
+
 
     protected static function getNavigationLabel(): string
     {
@@ -33,10 +36,10 @@ class TimesheetResource extends Resource
         return static::getNavigationLabel();
     }
 
-    protected static function getNavigationGroup(): ?string
-    {
-        return __('Timesheet');
-    }
+//    protected static function getNavigationGroup(): ?string
+//    {
+//        return __('Timesheet');
+//    }
 
     protected static function shouldRegisterNavigation(): bool
     {
@@ -103,7 +106,14 @@ class TimesheetResource extends Resource
                     ->searchable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('user_id')
+                    ->label(__('User'))
+                    ->multiple()
+                    ->options(fn() => User::all()->pluck('name', 'id')->toArray()),
+                Tables\Filters\SelectFilter::make('ticket_id')
+                    ->label(__('Ticket'))
+                    ->multiple()
+                    ->options(fn() => Ticket::all()->pluck('name', 'id')->toArray()),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

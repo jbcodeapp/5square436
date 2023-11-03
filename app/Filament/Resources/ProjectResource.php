@@ -38,10 +38,10 @@ class ProjectResource extends Resource
         return static::getNavigationLabel();
     }
 
-    protected static function getNavigationGroup(): ?string
-    {
-        return __('Management');
-    }
+//    protected static function getNavigationGroup(): ?string
+//    {
+//        return __('Management');
+//    }
 
     public static function form(Form $form): Form
     {
@@ -52,16 +52,16 @@ class ProjectResource extends Resource
                         Forms\Components\Grid::make()
                             ->columns(3)
                             ->schema([
-                                Forms\Components\SpatieMediaLibraryFileUpload::make('cover')
-                                    ->label(__('Cover image'))
-                                    ->image()
-                                    ->helperText(
-                                        __('If not selected, an image will be generated based on the project name')
-                                    )
-                                    ->columnSpan(1),
+//                                Forms\Components\SpatieMediaLibraryFileUpload::make('cover')
+//                                    ->label(__('Cover image'))
+//                                    ->image()
+//                                    ->helperText(
+//                                        __('If not selected, an image will be generated based on the project name')
+//                                    )
+//                                    ->columnSpan(1),
 
                                 Forms\Components\Grid::make()
-                                    ->columnSpan(2)
+//                                    ->columnSpan(2)
                                     ->schema([
                                         Forms\Components\Grid::make()
                                             ->columnSpan(2)
@@ -75,6 +75,7 @@ class ProjectResource extends Resource
 
                                                 Forms\Components\TextInput::make('ticket_prefix')
                                                     ->label(__('Ticket prefix'))
+//                                                    ->default('TKT')
                                                     ->maxLength(3)
                                                     ->columnSpan(2)
                                                     ->unique(Project::class, column: 'ticket_prefix', ignoreRecord: true)
@@ -85,7 +86,7 @@ class ProjectResource extends Resource
                                             ]),
 
                                         Forms\Components\Select::make('owner_id')
-                                            ->label(__('Project owner'))
+                                            ->label(__('Project Reviewer'))
                                             ->searchable()
                                             ->options(fn() => User::all()->pluck('name', 'id')->toArray())
                                             ->default(fn() => auth()->user()->id)
@@ -120,7 +121,7 @@ class ProjectResource extends Resource
                                         }
                                         return '';
                                     })
-                                    ->required(),
+                                    ->hidden(),
 
                                 Forms\Components\Select::make('status_type')
                                     ->label(__('Statuses configuration'))
@@ -134,7 +135,7 @@ class ProjectResource extends Resource
                                     ])
                                     ->default(fn() => 'default')
                                     ->disabled(fn($record) => $record && $record->tickets()->count())
-                                    ->required(),
+                                    ->hidden(),
                             ]),
                     ]),
             ]);
@@ -144,12 +145,12 @@ class ProjectResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('cover')
-                    ->label(__('Cover image'))
-                    ->formatStateUsing(fn($state) => new HtmlString('
-                            <div style=\'background-image: url("' . $state . '")\'
-                                 class="w-8 h-8 bg-cover bg-center bg-no-repeat"></div>
-                        ')),
+//                Tables\Columns\TextColumn::make('cover')
+//                    ->label(__('Cover image'))
+//                    ->formatStateUsing(fn($state) => new HtmlString('
+//                            <div style=\'background-image: url("' . $state . '")\'
+//                                 class="w-8 h-8 bg-cover bg-center bg-no-repeat"></div>
+//                        ')),
 
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('Project name'))
@@ -157,7 +158,7 @@ class ProjectResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('owner.name')
-                    ->label(__('Project owner'))
+                    ->label(__('Project Reviewer'))
                     ->sortable()
                     ->searchable(),
 
@@ -177,15 +178,15 @@ class ProjectResource extends Resource
                     ->label(__('Affected users'))
                     ->limit(2),
 
-                Tables\Columns\BadgeColumn::make('type')
-                    ->enum([
-                        'kanban' => __('Kanban'),
-                        'scrum' => __('Scrum')
-                    ])
-                    ->colors([
-                        'secondary' => 'kanban',
-                        'warning' => 'scrum',
-                    ]),
+//                Tables\Columns\BadgeColumn::make('type')
+//                    ->enum([
+//                        'kanban' => __('Kanban'),
+//                        'scrum' => __('Scrum')
+//                    ])
+//                    ->colors([
+//                        'secondary' => 'kanban',
+//                        'warning' => 'scrum',
+//                    ]),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('Created at'))

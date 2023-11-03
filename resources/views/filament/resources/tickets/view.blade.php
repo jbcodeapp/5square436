@@ -6,6 +6,8 @@
         <x-heroicon-o-arrow-left class="w-4 h-4"/> {{ __('Back to kanban board') }}
     </a>
 
+    {{ \Log::debug('view page counter: '. json_encode($this->record->hours()->count())) }}
+
     <div class="w-full flex md:flex-row flex-col gap-5">
 
         <x-filament::card class="md:w-2/3 w-full flex flex-col gap-5">
@@ -113,6 +115,19 @@
                 <div class="w-full flex items-center gap-1 text-gray-500">
                     @if($record->estimation)
                         {{ $record->estimationForHumans }}
+                    @else
+                        -
+                    @endif
+                </div>
+            </div>
+
+            <div class="w-full flex flex-col gap-1 pt-3">
+                <span class="text-gray-500 text-sm font-medium">
+                    {{ __('Target Date') }}
+                </span>
+                <div class="w-full flex items-center gap-1 text-gray-500">
+                    @if($record->target_date)
+                        {{ $record->target_date }}
                     @else
                         -
                     @endif

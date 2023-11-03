@@ -14,6 +14,8 @@ class TimesheetDashboard extends Page
     protected static ?int $navigationSort = 2;
 
     protected static string $view = 'filament::pages.dashboard';
+//    protected static bool $shouldRegisterNavigation = false;
+
 
     protected function getColumns(): int | array
     {
@@ -22,7 +24,7 @@ class TimesheetDashboard extends Page
 
     protected static function getNavigationLabel(): string
     {
-        return __('Dashboard');
+        return __('My TimeSheet');
     }
 
     protected static function getNavigationGroup(): ?string
@@ -38,9 +40,9 @@ class TimesheetDashboard extends Page
     protected function getWidgets(): array
     {
         return [
+            WeeklyReport::class,
             MonthlyReport::class,
             ActivitiesReport::class,
-            WeeklyReport::class
         ];
     }
 }

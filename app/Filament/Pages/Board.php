@@ -38,10 +38,10 @@ class Board extends Page implements HasForms
         return __('Board');
     }
 
-    protected static function getNavigationGroup(): ?string
-    {
-        return __('Management');
-    }
+//    protected static function getNavigationGroup(): ?string
+//    {
+//        return __('Management');
+//    }
 
     protected function getFormSchema(): array
     {
