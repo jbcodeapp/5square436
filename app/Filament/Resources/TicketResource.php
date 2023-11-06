@@ -20,6 +20,7 @@ use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
 use Illuminate\Support\HtmlString;
+use Yepsua\Filament\Tables\Components\RatingColumn;
 
 class TicketResource extends Resource
 {
@@ -265,6 +266,8 @@ class TicketResource extends Resource
                 ->label(__('Ticket name'))
                 ->sortable()
                 ->searchable(),
+
+            RatingColumn::make('rating'),
 
 //            Tables\Columns\TextColumn::make('owner.name')
 //                ->label(__('Reviewer'))

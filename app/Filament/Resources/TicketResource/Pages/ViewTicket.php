@@ -25,6 +25,7 @@ use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Facades\Excel;
 use phpDocumentor\Reflection\Types\This;
+use Yepsua\Filament\Forms\Components\Rating;
 
 class ViewTicket extends ViewRecord implements HasForms
 {
@@ -112,48 +113,6 @@ class ViewTicket extends ViewRecord implements HasForms
 // ================ Submit Ticket end ==================== //
 
 // ================ Review Ticket start ==================== //
-            Actions\Action::make('logHours')
-                ->label(__('Log time'))
-                ->icon('heroicon-o-clock')
-                ->color('warning')
-                ->modalWidth('sm')
-                ->modalHeading(__('Log worked time'))
-                ->modalSubheading(__('Use the following form to add your worked time in this ticket.'))
-                ->modalButton(__('Log'))
-                ->visible(fn() => in_array(
-                    auth()->user()->id,
-                    [$this->record->owner_id, $this->record->responsible_id]
-                ))
-                ->form([
-                    TextInput::make('time')
-                        ->label(__('Time to log'))
-                        ->numeric()
-                        ->required(),
-                    Select::make('activity_id')
-                        ->label(__('Activity'))
-                        ->searchable()
-                        ->reactive()
-                        ->options(function ($get, $set) {
-                            return Activity::all()->pluck('name', 'id')->toArray();
-                        }),
-                    Textarea::make('comment')
-                        ->label(__('Comment'))
-                        ->rows(3),
-                ])
-                ->action(function (Collection $records, array $data): void {
-                    $value = $data['time'];
-                    $comment = $data['comment'];
-                    TicketHour::create([
-                        'ticket_id' => $this->record->id,
-//                        'activity_id' => $data['activity_id'],
-                        'user_id' => auth()->user()->id,
-                        'value' => $value,
-                        'comment' => $comment
-                    ]);
-                    $this->record->refresh();
-                    $this->notify('success', __('Time logged into ticket'));
-                }),
-
             Actions\Action::make('reviewTicket')
                 ->label(__('Ticket Review'))
                 ->icon('heroicon-o-bell')
@@ -169,26 +128,37 @@ class ViewTicket extends ViewRecord implements HasForms
                 )
                 ->hidden(fn () => $this->record->owner_id != auth()->user()->id)
                 ->form([
-                    Textarea::make('review')
+                    Rating::make('rating')
+                        // ->size(10)
+                        // ->min(5)->max(10)
+                        // ->icons('heroicon-o-moon', 'heroicon-s-sun')
+                        // ->color('orange')
+
+                        // ->clearable()
+                        // ->clearIconColor('red')
+                        // ->clearIconTooltip('Clear')
+
+                        //->disabled()
+                        ->effects(true),
+
+                    Textarea::make('review_comment')
                         ->label(__('Review'))
                         ->rows(3),
                 ])
-                ->action(function () {
-                    $hourLogged = TicketHour::where('user_id', auth()->user()->id)
-                        ->where('ticket_id', $this->record->id)
-                        ->latest()->first();
-                    if($hourLogged->count() > 0 && $hourLogged->status != 1) {
-                        Ticket::where('id', $this->record->id)->update(['status_id'=> 5]);
+                ->action(function (Collection $records, array $data): void {
+                        Ticket::where('id', $this->record->id)
+                            ->update([
+                                'rating'=> $data['rating'],
+                                'review_comment'=> $data['review_comment'],
+                                'status_id' => 3,
+                            ]);
                         TicketActivity::create([
                             'user_id' => auth()->user()->id,
                             'ticket_id' => $this->record->id,
-                            'old_status_id' => 2,
-                            'new_status_id' => 5,
+                            'old_status_id' => 5,
+                            'new_status_id' => 3,
                         ]);
-                        $this->notify('success', __('Your work send to Reviewer'));
-                    } else {
-                        $this->notify('danger', __('Please start/stop timer first'));
-                    }
+                        $this->notify('success', __('Review rating and comment saved'));
                     $this->record->refresh();
                 })
                 ->requiresConfirmation(),

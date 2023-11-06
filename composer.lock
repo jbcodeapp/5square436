@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "20230161ca53de174c58f91a9fecc906",
+    "content-hash": "01a5bc8243a93081e9804e857d13292c",
     "packages": [
         {
             "name": "akaunting/laravel-money",
@@ -9237,6 +9237,77 @@
                 "source": "https://github.com/webmozarts/assert/tree/1.11.0"
             },
             "time": "2022-06-03T18:03:27+00:00"
+        },
+        {
+            "name": "yepsua/filament-rating-field",
+            "version": "v0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yepsua/filament-rating-field.git",
+                "reference": "74a943bcfcb40336b88a0665daff1a39112aeef0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yepsua/filament-rating-field/zipball/74a943bcfcb40336b88a0665daff1a39112aeef0",
+                "reference": "74a943bcfcb40336b88a0665daff1a39112aeef0",
+                "shasum": ""
+            },
+            "require": {
+                "filament/forms": "^2.0",
+                "filament/tables": "^2.0",
+                "illuminate/contracts": "^8.0|^9.0|^10.0",
+                "php": "^8.0",
+                "spatie/laravel-package-tools": "^1.9.2"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.8",
+                "nunomaduro/collision": "^6.0",
+                "nunomaduro/larastan": "^2.0.1",
+                "orchestra/testbench": "^7.0",
+                "pestphp/pest": "^1.21",
+                "pestphp/pest-plugin-laravel": "^1.1",
+                "phpstan/extension-installer": "^1.1",
+                "phpstan/phpstan-deprecation-rules": "^1.0",
+                "phpstan/phpstan-phpunit": "^1.0",
+                "phpunit/phpunit": "^9.5",
+                "spatie/laravel-ray": "^1.26"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Yepsua\\Filament\\FilamentRatingFieldServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Yepsua\\Filament\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Omar Yepez",
+                    "email": "oyepez003@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Ranting field for the Filament forms",
+            "homepage": "https://github.com/yepsua/filament-rating-field",
+            "keywords": [
+                "filament-rating-field",
+                "laravel",
+                "yepsua"
+            ],
+            "support": {
+                "issues": "https://github.com/yepsua/filament-rating-field/issues",
+                "source": "https://github.com/yepsua/filament-rating-field/tree/v0.2.0"
+            },
+            "time": "2023-07-19T12:53:04+00:00"
         }
     ],
     "packages-dev": [
@@ -11762,5 +11833,5 @@
         "ext-iconv": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.1.0"
+    "plugin-api-version": "2.6.0"
 }

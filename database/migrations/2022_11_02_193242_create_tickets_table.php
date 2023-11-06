@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->longText('content');
             $table->boolean('is_repeat')->default(false);
+            $table->integer('rating')->nullable();
+            $table->text('review_comment')->nullable();
             $table->foreignId('owner_id')->constrained('users');
             $table->foreignId('responsible_id')->nullable()->constrained('users');
             $table->foreignId('status_id')->constrained('ticket_statuses');
