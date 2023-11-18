@@ -231,36 +231,36 @@ class ProjectResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
 
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\Action::make('exportLogHours')
-                        ->label(__('Export hours'))
-                        ->icon('heroicon-o-document-download')
-                        ->color('secondary')
-                        ->action(fn($record) => Excel::download(
-                            new ProjectHoursExport($record),
-                            'time_' . Str::slug($record->name) . '.csv',
-                            \Maatwebsite\Excel\Excel::CSV,
-                            ['Content-Type' => 'text/csv']
-                        )),
-
-                    Tables\Actions\Action::make('kanban')
-                        ->label(
-                            fn ($record)
-                                => ($record->type === 'scrum' ? __('Scrum board') : __('Kanban board'))
-                        )
-                        ->icon('heroicon-o-view-boards')
-                        ->color('secondary')
-                        ->url(function ($record) {
-                            if ($record->type === 'scrum') {
-                                return route('filament.pages.scrum/{project}', ['project' => $record->id]);
-                            } else {
-                                return route('filament.pages.kanban/{project}', ['project' => $record->id]);
-                            }
-                        }),
-                ])->color('secondary'),
+//                Tables\Actions\ActionGroup::make([
+//                    Tables\Actions\Action::make('exportLogHours')
+//                        ->label(__('Export hours'))
+//                        ->icon('heroicon-o-document-download')
+//                        ->color('secondary')
+//                        ->action(fn($record) => Excel::download(
+//                            new ProjectHoursExport($record),
+//                            'time_' . Str::slug($record->name) . '.csv',
+//                            \Maatwebsite\Excel\Excel::CSV,
+//                            ['Content-Type' => 'text/csv']
+//                        )),
+//
+//                    Tables\Actions\Action::make('kanban')
+//                        ->label(
+//                            fn ($record)
+//                                => ($record->type === 'scrum' ? __('Scrum board') : __('Kanban board'))
+//                        )
+//                        ->icon('heroicon-o-view-boards')
+//                        ->color('secondary')
+//                        ->url(function ($record) {
+//                            if ($record->type === 'scrum') {
+//                                return route('filament.pages.scrum/{project}', ['project' => $record->id]);
+//                            } else {
+//                                return route('filament.pages.kanban/{project}', ['project' => $record->id]);
+//                            }
+//                        }),
+//                ])->color('secondary'),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+//                Tables\Actions\DeleteBulkAction::make(),
             ]);
     }
 

@@ -1,12 +1,12 @@
 @php($record = $this->record)
 <x-filament::page>
 
+    @if(auth()->user()->roles[0]->id == 1)
     <a href="{{ route('filament.pages.kanban/{project}', ['project' => $record->project->id]) }}"
        class="flex items-center gap-1 text-gray-500 hover:text-gray-700 font-medium text-xs">
         <x-heroicon-o-arrow-left class="w-4 h-4"/> {{ __('Back to kanban board') }}
     </a>
-
-    {{ \Log::debug('view page counter: '. json_encode($this->record->hours()->count())) }}
+    @endif
 
     <div class="w-full flex md:flex-row flex-col gap-5">
 
@@ -136,6 +136,32 @@
 
             <div class="w-full flex flex-col gap-1 pt-3">
                 <span class="text-gray-500 text-sm font-medium">
+                    {{ __('Reviewer Estimation') }}
+                </span>
+                <div class="w-full flex items-center gap-1 text-gray-500">
+                    @if($record->reviewer_estimation)
+                        {{ $record->reviewerEstimationForHumans }}
+                    @else
+                        -
+                    @endif
+                </div>
+            </div>
+
+            <div class="w-full flex flex-col gap-1 pt-3">
+                <span class="text-gray-500 text-sm font-medium">
+                    {{ __('Reviewer Target Date') }}
+                </span>
+                <div class="w-full flex items-center gap-1 text-gray-500">
+                    @if($record->reviewer_target_date)
+                        {{ $record->reviewer_target_date }}
+                    @else
+                        -
+                    @endif
+                </div>
+            </div>
+
+            <div class="w-full flex flex-col gap-1 pt-3">
+                <span class="text-gray-500 text-sm font-medium">
                     {{ __('Total time logged') }}
                 </span>
                 @if($record->hours()->count())
@@ -251,7 +277,12 @@
                 <button wire:click="selectTab('time')"
                         class="md:text-xl text-sm p-3 border-b-2 border-transparent hover:border-primary-500
                         @if($tab === 'time') border-primary-500 text-primary-500 @else text-gray-700 @endif">
-                    {{ __('Time logged') }}
+                    {{ __('ExecutionTime') }}
+                </button>
+                <button wire:click="selectTab('reviewtime')"
+                        class="md:text-xl text-sm p-3 border-b-2 border-transparent hover:border-primary-500
+                        @if($tab === 'reviewtime') border-primary-500 text-primary-500 @else text-gray-700 @endif">
+                    {{ __('ReviewTime') }}
                 </button>
                 <button wire:click="selectTab('attachments')"
                         class="md:text-xl text-sm p-3 border-b-2 border-transparent hover:border-primary-500
@@ -339,6 +370,9 @@
             @endif
             @if($tab === 'time')
                 <livewire:timesheet.time-logged :ticket="$record" />
+            @endif
+            @if($tab === 'reviewtime')
+                <livewire:timesheet.review-time-logged :ticket="$record" />
             @endif
             @if($tab === 'attachments')
                 <livewire:ticket.attachments :ticket="$record" />

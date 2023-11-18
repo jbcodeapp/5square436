@@ -3,19 +3,15 @@
 namespace App\Filament\Resources\TicketResource\Pages;
 
 use App\Exports\TicketHoursExport;
+use App\Filament\Resources\CompletedTicketResource;
 use App\Filament\Resources\TicketResource;
-use App\Models\Activity;
 use App\Models\Ticket;
 use App\Models\TicketActivity;
 use App\Models\TicketComment;
 use App\Models\TicketHour;
-use App\Models\TicketSubscriber;
 use Carbon\Carbon;
 use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\TimePicker;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Actions\Action;
@@ -24,14 +20,14 @@ use Filament\Pages\Actions;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Facades\Excel;
-use phpDocumentor\Reflection\Types\This;
 use Yepsua\Filament\Forms\Components\Rating;
 
-class ViewTicket extends ViewRecord implements HasForms
+class ViewCompletedTicket extends ViewRecord implements HasForms
 {
     use InteractsWithForms;
 
-    protected static string $resource = TicketResource::class;
+    protected static string $resource = CompletedTicketResource::class;
+    protected static ?string $model = Ticket::class;
 
     protected static string $view = 'filament.resources.tickets.view';
 
@@ -43,6 +39,7 @@ class ViewTicket extends ViewRecord implements HasForms
 
     public function mount($record): void
     {
+        //dd($record);
         parent::mount($record);
         $this->form->fill();
     }

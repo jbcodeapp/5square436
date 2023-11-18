@@ -28,7 +28,11 @@ class TicketTimeLogged extends BarChartWidget
 
     protected function getData(): array
     {
+        $role = auth()->user()->roles->pluck('id');
         $query = Ticket::query();
+        if($role[0] != 1) {
+            $query->whereIn('responsible_id', [auth()->user()->id]);
+        }
         $query->has('hours');
         $query->limit(10);
         return [

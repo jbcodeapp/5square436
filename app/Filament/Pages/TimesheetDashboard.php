@@ -42,7 +42,7 @@ class TimesheetDashboard extends Page
         return [
             WeeklyReport::class,
             MonthlyReport::class,
-            ActivitiesReport::class,
+//            ActivitiesReport::class,
         ];
     }
 }

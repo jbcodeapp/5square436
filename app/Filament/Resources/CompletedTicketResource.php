@@ -24,22 +24,25 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\HtmlString;
 use Yepsua\Filament\Tables\Components\RatingColumn;
 
-class TicketResource extends Resource
+class CompletedTicketResource extends Resource
 {
     protected static ?string $model = Ticket::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-ticket';
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
+
+    protected static ?string $slug = 'completed-tickets';
+
 
     protected static function getNavigationLabel(): string
     {
-        return __('Tickets');
+        return __('Completed Tickets');
     }
 
     public static function getEloquentQuery(): Builder
     {
-        return static::getModel()::query()->whereIn('status_id', [1,2,5]);
+        return static::getModel()::query()->whereIn('status_id', [3,4]);
     }
 
     public static function getPluralLabel(): ?string
@@ -211,9 +214,9 @@ class TicketResource extends Resource
                                     ]),
 
                                 Forms\Components\Checkbox::make('is_repeat')
-                                    ->label(__('This is Repeated Task every month ?'))
+                                    ->label(__('This is repeated task every month ?'))
                                     ->helperText(
-                                        __('If you Checked, then this Ticket Repeated every month on 1st')
+                                        __('If you Checked, then this ticket repeated every month on 1st')
                                     ),
                             ]),
 
@@ -288,56 +291,22 @@ class TicketResource extends Resource
                 ->sortable()
                 ->searchable(),
 
-//            RatingColumn::make('rating'),
+            RatingColumn::make('rating'),
 
-//            Tables\Columns\TextColumn::make('owner.name')
-//                ->label(__('Reviewer'))
-//                ->sortable()
-//                ->formatStateUsing(fn($record) => view('components.user-avatar', ['user' => $record->owner]))
-//                ->searchable(),
-
-            Tables\Columns\TextColumn::make('responsible.name')
-                ->label(__('Responsible'))
-                ->sortable()
-                ->formatStateUsing(fn($record) => view('components.user-avatar', ['user' => $record->responsible]))
-                ->searchable(),
-
-            Tables\Columns\TextColumn::make('status.name')
-                ->label(__('Status'))
-                ->formatStateUsing(fn($record) => new HtmlString('
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="filament-tables-color-column relative flex h-6 w-6 rounded-md"
-                                    style="background-color: ' . $record->status->color . '"></span>
-                                <span>' . $record->status->name . '</span>
-                            </div>
-                        '))
+            Tables\Columns\TextColumn::make('review_comment')
+                ->label(__('Review'))
                 ->sortable()
                 ->searchable(),
 
-//            Tables\Columns\TextColumn::make('type.name')
-//                ->label(__('Type'))
-//                ->formatStateUsing(
-//                    fn($record) => view('partials.filament.resources.ticket-type', ['state' => $record->type])
-//                )
-//                ->sortable()
-//                ->searchable(),
-
-            Tables\Columns\TextColumn::make('priority.name')
-                ->label(__('Priority'))
-                ->formatStateUsing(fn($record) => new HtmlString('
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="filament-tables-color-column relative flex h-6 w-6 rounded-md"
-                                    style="background-color: ' . $record->priority->color . '"></span>
-                                <span>' . $record->priority->name . '</span>
-                            </div>
-                        '))
+            Tables\Columns\TextColumn::make('owner.name')
+                ->label(__('Reviewer'))
                 ->sortable()
+                ->formatStateUsing(fn($record) => view('components.user-avatar', ['user' => $record->owner]))
                 ->searchable(),
 
-            Tables\Columns\TextColumn::make('target_date')
-                ->label(__('Targeted at'))
+            Tables\Columns\TextColumn::make('updated_at')
+                ->label(__('Completed at'))
                 ->date()
-                ->formatStateUsing(fn($record) => new HtmlString('<span style="color: '.($record->target_date->gt(Carbon::today())) .'red;">' . date('M d, Y', strtotime($record->target_date)) . '</span>'))
                 ->sortable()
                 ->searchable(),
         ]);
@@ -402,9 +371,9 @@ class TicketResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTickets::route('/'),
+            'index' => Pages\ListCompletedTickets::route('/'),
             'create' => Pages\CreateTicket::route('/create'),
-            'view' => Pages\ViewTicket::route('/{record}'),
+            'view' => Pages\ViewCompletedTicket::route('/{record}'),
             'edit' => Pages\EditTicket::route('/{record}/edit'),
         ];
     }

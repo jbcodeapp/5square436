@@ -25,6 +25,8 @@ return new class extends Migration
             $table->foreignId('status_id')->constrained('ticket_statuses');
             $table->foreignId('project_id')->constrained('projects');
             $table->timestamp('target_date')->nullable();
+            $table->float('reviewer_estimation')->nullable();
+            $table->timestamp('reviewer_target_date')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

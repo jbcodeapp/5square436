@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Notifications\TicketCreated;
 use App\Notifications\TicketStatusUpdated;
+use Carbon\Carbon;
 use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,8 +24,10 @@ class Ticket extends Model implements HasMedia
     protected $fillable = [
         'name', 'content', 'owner_id', 'responsible_id',
         'status_id', 'project_id', 'code', 'rating','review_comment','order', 'type_id',
-        'priority_id', 'estimation', 'epic_id', 'sprint_id', 'is_repeat', 'target_date'
+        'priority_id', 'estimation', 'epic_id', 'sprint_id', 'is_repeat', 'target_date', 'reviewer_estimation', 'reviewer_target_date'
     ];
+
+    protected $dates = ['target_date'];
 
     public static function boot()
     {
@@ -162,8 +165,17 @@ class Ticket extends Model implements HasMedia
     {
         return new Attribute(
             get: function () {
-                $seconds = $this->hours->sum('value') * 3600;
+                $seconds = $this->hours->sum('value');
                 return CarbonInterval::seconds($seconds)->cascade()->forHumans();
+
+//                $seconds = $this->hours;
+//                $start = Carbon::parse($seconds[0]->start_time);
+//                $end = Carbon::parse($seconds[0]->end_time);
+//                $diff = $start->diffInSeconds($end);
+//
+//                $temp = $end->diff($start)->format('%H:%i:%s');
+//                //dd($seconds[0], $start, $end, $diff, $temp);
+//                return CarbonInterval::seconds($diff)->cascade()->forHumans();
             }
         );
     }
@@ -172,7 +184,7 @@ class Ticket extends Model implements HasMedia
     {
         return new Attribute(
             get: function () {
-                return $this->hours->sum('value') * 3600;
+                return $this->hours->sum('value');
             }
         );
     }
@@ -191,6 +203,27 @@ class Ticket extends Model implements HasMedia
         return new Attribute(
             get: function () {
                 return CarbonInterval::seconds($this->estimationInSeconds)->cascade()->forHumans();
+            }
+        );
+    }
+
+    public function reviewerEstimationForHumans(): Attribute
+    {
+        return new Attribute(
+            get: function () {
+                return CarbonInterval::seconds($this->reviewerEstimationInSeconds)->cascade()->forHumans();
+            }
+        );
+    }
+
+    public function reviewerEstimationInSeconds(): Attribute
+    {
+        return new Attribute(
+            get: function () {
+                if (!$this->reviewer_estimation) {
+                    return null;
+                }
+                return $this->reviewer_estimation * 3600;
             }
         );
     }

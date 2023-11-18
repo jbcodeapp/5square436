@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 
-class TimeLogged extends Component implements HasTable
+class ReviewTimeLogged extends Component implements HasTable
 {
     use InteractsWithTable;
 
@@ -25,7 +25,7 @@ class TimeLogged extends Component implements HasTable
 
     protected function getTableQuery(): Builder
     {
-        return $this->ticket->hours()->where('is_reviewer', 0)->getQuery();
+        return $this->ticket->hours()->where('is_reviewer', 1)->getQuery();
     }
 
     protected function getTableColumns(): array
@@ -49,9 +49,6 @@ class TimeLogged extends Component implements HasTable
 
             Tables\Columns\TextColumn::make('value_readable')
                 ->label(__('Logged Hours'))
-//                ->formatStateUsing(function (int $state) {
-//
-//                })
                 ->sortable()
                 ->searchable(),
 

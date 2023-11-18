@@ -43,7 +43,7 @@ class TimesheetResource extends Resource
 
     protected static function shouldRegisterNavigation(): bool
     {
-        return auth()->user()->can('List timesheet data');
+        return false; //auth()->user()->can('List timesheet data');
     }
 
     public static function form(Form $form): Form
@@ -85,15 +85,15 @@ class TimesheetResource extends Resource
                     ->label(__('Hours'))
                     ->sortable()
                     ->searchable(),
-                Tables\Columns\TextColumn::make('comment')
-                    ->label(__('Comment'))
-                    ->limit(50)
-                    ->sortable()
-                    ->searchable(),
-
-                Tables\Columns\TextColumn::make('activity.name')
-                    ->label(__('Activity'))
-                    ->sortable(),
+//                Tables\Columns\TextColumn::make('comment')
+//                    ->label(__('Comment'))
+//                    ->limit(50)
+//                    ->sortable()
+//                    ->searchable(),
+//
+//                Tables\Columns\TextColumn::make('activity.name')
+//                    ->label(__('Activity'))
+//                    ->sortable(),
 
                 Tables\Columns\TextColumn::make('ticket.name')
                     ->label(__('Ticket'))

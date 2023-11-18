@@ -18,8 +18,9 @@ return new class extends Migration {
             $table->foreignId('user_id')->constrained('users');
             $table->float('value')->nullable();
             $table->boolean('status')->default(false);
-            $table->dateTime('start_time')->nullable();
-            $table->dateTime('end_time')->nullable();
+            $table->boolean('is_reviewer')->default(false);
+            $table->timestamp('start_time')->nullable();
+            $table->timestamp('end_time')->nullable();
             $table->timestamps();
         });
     }

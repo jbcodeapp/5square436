@@ -33,6 +33,12 @@ class Board extends Page implements HasForms
         $this->form->fill();
     }
 
+    protected static function shouldRegisterNavigation(): bool
+    {
+//        return auth()->user()->can('View timesheet dashboard');
+        return (auth()->user()->roles[0]->id == 1);
+    }
+
     protected static function getNavigationLabel(): string
     {
         return __('Board');

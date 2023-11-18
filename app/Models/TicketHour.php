@@ -13,7 +13,11 @@ class TicketHour extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'ticket_id', 'start_time', 'end_time', 'status', 'value', 'comment', 'activity_id'
+        'user_id', 'ticket_id', 'is_reviewer', 'start_time', 'end_time', 'status', 'value', 'comment', 'activity_id'
+    ];
+
+    protected $appends = [
+        'value_readable'
     ];
 
     public function user(): BelongsTo
@@ -39,5 +43,10 @@ class TicketHour extends Model
                 return CarbonInterval::seconds($seconds)->cascade()->forHumans();
             }
         );
+    }
+
+    public function getValueReadableAttribute()
+    {
+        return CarbonInterval::seconds($this->value)->cascade()->forHumans();
     }
 }

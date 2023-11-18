@@ -18,6 +18,7 @@ class ViewProject extends ViewRecord
                     fn ()
                     => ($this->record->type === 'scrum' ? __('Scrum board') : __('Kanban board'))
                 )
+                ->visible(auth()->user()->can('Update project'))
                 ->icon('heroicon-o-view-boards')
                 ->color('secondary')
                 ->url(function () {
