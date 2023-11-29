@@ -128,7 +128,7 @@ class ViewTicket extends ViewRecord implements HasForms
                 )
                 ->hidden(fn () => $this->record->owner_id != auth()->user()->id)
                 ->form([
-                    Rating::make('rating')
+                    Rating::make('rating')->required()
                         // ->size(10)
                         // ->min(5)->max(10)
                         // ->icons('heroicon-o-moon', 'heroicon-s-sun')
@@ -143,13 +143,16 @@ class ViewTicket extends ViewRecord implements HasForms
 
                     Textarea::make('review_comment')
                         ->label(__('Review'))
+                        ->required()
                         ->rows(3),
                 ])
                 ->action(function (Collection $records, array $data): void {
+
+                    if($this->record->hours()->where('is_reviewer', 1)->count()) {
                         Ticket::where('id', $this->record->id)
                             ->update([
-                                'rating'=> $data['rating'],
-                                'review_comment'=> $data['review_comment'],
+                                'rating' => $data['rating'],
+                                'review_comment' => $data['review_comment'],
                                 'status_id' => 3,
                             ]);
                         TicketActivity::create([
@@ -159,6 +162,9 @@ class ViewTicket extends ViewRecord implements HasForms
                             'new_status_id' => 3,
                         ]);
                         $this->notify('success', __('Review rating and comment saved'));
+                    } else {
+                        $this->notify('danger', __('Please start/stop review timer first'));
+                    }
                     $this->record->refresh();
                 })
                 ->requiresConfirmation(),
@@ -317,7 +323,7 @@ class ViewTicket extends ViewRecord implements HasForms
                         ->where('ticket_id', $this->record->id)
                         ->where('is_reviewer', 1)
                         ->latest()->first();
-                    if($hourLogged->count() > 0 && $hourLogged->status != 1) {
+                    if($hourLogged != null && $hourLogged->count() > 0 && $hourLogged->status != 1) {
                         Ticket::where('id', $this->record->id)->update(['status_id'=> 2]);
                         TicketActivity::create([
                             'user_id' => auth()->user()->id,

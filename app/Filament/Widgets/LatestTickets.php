@@ -66,6 +66,7 @@ class LatestTickets extends BaseWidget
                     . '</a>
                             <span class="text-sm text-gray-400">|</span> '
                     . $record->name . '
+                            <span class="text-sm text-gray-400">|</span> '.date('M d, Y', strtotime($record->target_date)).'
                         </span>
                         ' . ($record->responsible ? '
                         <div class="flex items-center gap-3">

@@ -301,7 +301,19 @@ class CompletedTicketResource extends Resource
             Tables\Columns\TextColumn::make('owner.name')
                 ->label(__('Reviewer'))
                 ->sortable()
-                ->formatStateUsing(fn($record) => view('components.user-avatar', ['user' => $record->owner]))
+//                ->formatStateUsing(fn($record) => view('components.user-avatar', ['user' => $record->owner]))
+                ->searchable(),
+
+            Tables\Columns\TextColumn::make('responsible.name')
+                ->label(__('Responsible'))
+                ->sortable()
+//                ->formatStateUsing(fn($record) => view('components.user-avatar', ['user' => $record->responsible]))
+                ->searchable(),
+
+            Tables\Columns\TextColumn::make('target_date')
+                ->label(__('Targeted at'))
+                ->date()
+                ->sortable()
                 ->searchable(),
 
             Tables\Columns\TextColumn::make('updated_at')
@@ -354,6 +366,7 @@ class CompletedTicketResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make()

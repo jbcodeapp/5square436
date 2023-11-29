@@ -189,10 +189,12 @@ class TicketResource extends Resource
 
                                         Forms\Components\TextInput::make('estimation')
                                             ->label(__('Estimation time (Hrs)'))
+                                            ->required()
 //                                            ->helperText(__('In Hours'))
                                             ->numeric(),
 
                                         Forms\Components\DatePicker::make('target_date')
+                                            ->required()
                                             ->label(__('Target Date')),
 
                                     ]),
@@ -203,9 +205,11 @@ class TicketResource extends Resource
                                     ->schema([
                                         Forms\Components\TextInput::make('reviewer_estimation')
                                             ->label(__('Reviewer Estimation time (Hrs)'))
+                                            ->required()
                                             ->numeric(),
 
                                         Forms\Components\DatePicker::make('reviewer_target_date')
+                                            ->required()
                                             ->label(__('Reviewer Target Date')),
 
                                     ]),
@@ -290,16 +294,16 @@ class TicketResource extends Resource
 
 //            RatingColumn::make('rating'),
 
-//            Tables\Columns\TextColumn::make('owner.name')
-//                ->label(__('Reviewer'))
-//                ->sortable()
+            Tables\Columns\TextColumn::make('owner.name')
+                ->label(__('Reviewer'))
+                ->sortable()
 //                ->formatStateUsing(fn($record) => view('components.user-avatar', ['user' => $record->owner]))
-//                ->searchable(),
+                ->searchable(),
 
             Tables\Columns\TextColumn::make('responsible.name')
                 ->label(__('Responsible'))
                 ->sortable()
-                ->formatStateUsing(fn($record) => view('components.user-avatar', ['user' => $record->responsible]))
+//                ->formatStateUsing(fn($record) => view('components.user-avatar', ['user' => $record->responsible]))
                 ->searchable(),
 
             Tables\Columns\TextColumn::make('status.name')

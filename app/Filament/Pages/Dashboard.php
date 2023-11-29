@@ -19,7 +19,7 @@ class Dashboard extends BasePage
 
     protected function getColumns(): int | array
     {
-        return 6;
+        return 1;
     }
 
     protected function getWidgets(): array
