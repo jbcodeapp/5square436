@@ -27,7 +27,7 @@ class Ticket extends Model implements HasMedia
         'priority_id', 'estimation', 'epic_id', 'sprint_id', 'is_repeat', 'target_date', 'reviewer_estimation', 'reviewer_target_date'
     ];
 
-    protected $dates = ['target_date'];
+    protected $dates = ['target_date', 'reviewer_target_date'];
 
     public static function boot()
     {
@@ -166,6 +166,25 @@ class Ticket extends Model implements HasMedia
         return new Attribute(
             get: function () {
                 $seconds = $this->hours->sum('value');
+                return CarbonInterval::seconds($seconds)->cascade()->forHumans();
+
+//                $seconds = $this->hours;
+//                $start = Carbon::parse($seconds[0]->start_time);
+//                $end = Carbon::parse($seconds[0]->end_time);
+//                $diff = $start->diffInSeconds($end);
+//
+//                $temp = $end->diff($start)->format('%H:%i:%s');
+//                //dd($seconds[0], $start, $end, $diff, $temp);
+//                return CarbonInterval::seconds($diff)->cascade()->forHumans();
+            }
+        );
+    }
+
+    public function totalReviewerLoggedHours(): Attribute
+    {
+        return new Attribute(
+            get: function () {
+                $seconds = $this->hours->where('is_reviewer', '1')->sum('value');
                 return CarbonInterval::seconds($seconds)->cascade()->forHumans();
 
 //                $seconds = $this->hours;

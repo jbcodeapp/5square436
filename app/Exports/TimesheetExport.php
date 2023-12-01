@@ -22,14 +22,19 @@ class TimesheetExport implements FromCollection, WithHeadings
     {
         return [
             '#',
-            'Project',
             'Ticket',
-            'Details',
-            'User',
-            'Time',
-            'Hours',
-            'Activity',
-            'Date',
+            'Project',
+            'Rating',
+            'Review',
+            'Responsible',
+            'Responsible Estimation',
+            'Responsible Actual',
+            'Responsible TargetDate',
+            'Reviewer',
+            'Reviewer Estimation',
+            'Reviewer Actual',
+            'Reviewer TargetDate',
+            'Status',
         ];
     }
 
@@ -40,21 +45,50 @@ class TimesheetExport implements FromCollection, WithHeadings
     {
         $collection = collect();
 
-        $hours = TicketHour::where('user_id', auth()->user()->id)
-            ->whereBetween('created_at', [$this->params['start_date'], $this->params['end_date']])
-            ->get();
+//        $hours = TicketHour::where('user_id', auth()->user()->id)
+//            ->whereBetween('created_at', [$this->params['start_date'], $this->params['end_date']])
+//            ->get();
+
+        $query = Ticket::query();
+        $query->when($this->params['user_id'] != null, function ($q) {
+            return $q->where('responsible_id', '=', $this->params['user_id']);
+        });
+        $query->when($this->params['project_id'] != null, function ($q) {
+            return $q->where('project_id', '=', $this->params['project_id']);
+        });
+        $query->whereBetween('created_at', [$this->params['start_date'], $this->params['end_date']]);
+        $hours = $query->get();
 
         foreach ($hours as $item) {
             $collection->push([
-                '#' => $item->ticket->code,
-                'project' => $item->ticket->project->name,
-                'ticket' => $item->ticket->name,
-                'details' => $item->comment,
-                'user' => $item->user->name,
-                'time' => $item->forHumans,
-                'hours' => number_format($item->value, 2, ',', ' '),
-                'activity' => $item->activity ? $item->activity->name : '-',
-                'date' => $item->created_at->format(__('Y-m-d g:i A')),
+                '#' => $item->code,
+                'ticket' => $item->name,
+                'project' => $item->project->name,
+//                'details' => $item->content,
+
+                // review
+                'rating' => $item->rating." star",
+                'review' => $item->review_comment,
+
+                // respoinsible
+                'responsible' => $item->responsible->name,
+                'responsibleEstimation(hr)' => number_format($item->estimation, 2, '.', ','),
+                'responsibleActualTime(hr)' => $item->totalLoggedHours,
+                'responsibleTargetDate' => $item->target_date->format(__('Y-m-d')),
+
+                //review
+                'reviewer' => $item->owner->name,
+                'reviewerEstimation(hr)' => $item->reviewer_estimation,
+                'reviewerActualTime(hr)' => $item->totalReviewerLoggedHours,
+                'reviewerTargetDate' => $item->reviewer_target_date->format(__('Y-m-d')),
+
+                'status' => $item->status->name,
+
+//                'user' => $item->user->name,
+//                'time' => $item->forHumans,
+//                'hours' => number_format($item->value, 2, ',', ' '),
+//                'activity' => $item->activity ? $item->activity->name : '-',
+//                'date' => $item->created_at->format(__('Y-m-d g:i A')),
             ]);
         }
 
