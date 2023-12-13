@@ -22,11 +22,11 @@ class DashboardTicketStatsOverview extends BaseWidget
             $total = Ticket::count();
             $todo = Ticket::query()->where('status_id', 1)->count();
             $inProgress = Ticket::query()->where('status_id', 2)->count();
-            $done = Ticket::query()->where('status_id', 3)->count();
+//            $done = Ticket::query()->where('status_id', 3)->count();
             $under_review = Ticket::query()->where('status_id', 5)->count();
-            $archived = Ticket::query()->where('status_id', 4)->count();
+//            $archived = Ticket::query()->where('status_id', 4)->count();
             $overDue = Ticket::query()
-                ->whereIn('status_id',[1,2])
+                ->whereIn('status_id',[1,2,5])
                 ->where('target_date', '<', Carbon::today())
                 ->count();
         } else {
@@ -34,10 +34,14 @@ class DashboardTicketStatsOverview extends BaseWidget
             $total = Ticket::where('responsible_id', $id)->count();
             $todo = Ticket::query()->where('responsible_id', $id)->where('status_id', 1)->count();
             $inProgress = Ticket::query()->where('responsible_id', $id)->where('status_id', 2)->count();
-            $done = Ticket::query()->where('responsible_id', $id)->where('status_id', 3)->count();
+//            $done = Ticket::query()->where('responsible_id', $id)->where('status_id', 3)->count();
             $under_review = Ticket::query()->where('responsible_id', $id)->where('status_id', 5)->count();
-            $archived = Ticket::query()->where('responsible_id', $id)->where('status_id', 4)->count();
-            $overDue = Ticket::query()->where('responsible_id', $id)->whereIn('status_id',[1,2])->where('target_date', '>', Carbon::today())->count();
+//            $archived = Ticket::query()->where('responsible_id', $id)->where('status_id', 4)->count();
+            $overDue = Ticket::query()
+                ->where('responsible_id', $id)
+                ->whereIn('status_id',[1,2,5])
+                ->where('target_date', '<', Carbon::today())
+                ->count();
         }
 
         return [

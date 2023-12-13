@@ -27,7 +27,7 @@ class TicketStatsOverview extends BaseWidget
             $under_review = Ticket::query()->where('status_id', 5)->count();
             $archived = Ticket::query()->where('status_id', 4)->count();
             $overDue = Ticket::query()
-                ->whereIn('status_id',[1,2])
+                ->whereIn('status_id',[1,2,5])
                 ->where('target_date', '<', Carbon::today())
                 ->count();
         } else {
@@ -38,7 +38,11 @@ class TicketStatsOverview extends BaseWidget
             $done = Ticket::query()->where('responsible_id', $id)->where('status_id', 3)->count();
             $under_review = Ticket::query()->where('responsible_id', $id)->where('status_id', 5)->count();
             $archived = Ticket::query()->where('responsible_id', $id)->where('status_id', 4)->count();
-            $overDue = Ticket::query()->where('responsible_id', $id)->whereIn('status_id',[1,2])->where('target_date', '>', Carbon::today())->count();
+            $overDue = Ticket::query()
+                ->where('responsible_id', $id)
+                ->whereIn('status_id',[1,2,5])
+                ->where('target_date', '<', Carbon::today())
+                ->count();
         }
 
         return [
