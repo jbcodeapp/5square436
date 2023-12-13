@@ -385,9 +385,9 @@ class CompletedTicketResource extends Resource
     {
         return [
             'index' => Pages\ListCompletedTickets::route('/'),
-            'create' => Pages\CreateTicket::route('/create'),
+//            'create' => Pages\CreateTicket::route('/create'),
             'view' => Pages\ViewCompletedTicket::route('/{record}'),
-            'edit' => Pages\EditTicket::route('/{record}/edit'),
+//            'edit' => Pages\EditTicket::route('/{record}/edit'),
         ];
     }
 }

@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TicketResource\Pages;
 use App\Filament\Resources\TicketResource\RelationManagers;
+use App\Filament\Resources\TicketResource\Widgets\TicketOverview;
+use App\Filament\Resources\TicketResource\Widgets\TicketStatsOverview;
 use App\Models\Epic;
 use App\Models\Project;
 use App\Models\Ticket;
@@ -289,8 +291,8 @@ class TicketResource extends Resource
         $columns = array_merge($columns, [
             Tables\Columns\TextColumn::make('name')
                 ->label(__('Ticket name'))
-                ->sortable()
-                ->searchable(),
+                ->sortable(),
+//                ->searchable(isIndividual: true),
 
 //            RatingColumn::make('rating'),
 
@@ -386,6 +388,7 @@ class TicketResource extends Resource
                     ->multiple()
                     ->options(fn() => TicketPriority::all()->pluck('name', 'id')->toArray()),
             ])
+            ->defaultSort('target_date', 'asc')
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
@@ -400,6 +403,13 @@ class TicketResource extends Resource
     {
         return [
             //
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            TicketStatsOverview::class,
         ];
     }
 

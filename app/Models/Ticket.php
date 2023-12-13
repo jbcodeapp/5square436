@@ -212,7 +212,9 @@ class Ticket extends Model implements HasMedia
     {
         return new Attribute(
             get: function () {
-                return $this->hours->sum('value');
+                $seconds = $this->hours->sum('value');
+                return sprintf('%d.%d', $seconds/3600, floor($seconds/60) % 60);
+//                return CarbonInterval::seconds($seconds)->cascade()->forHumans();
             }
         );
     }

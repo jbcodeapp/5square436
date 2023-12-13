@@ -3,6 +3,7 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Ticket;
+use Carbon\Carbon;
 use Filament\Tables;
 use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,7 +20,7 @@ class LatestTickets extends BaseWidget
 
     public function mount(): void
     {
-        self::$heading = __('Latest tickets');
+        self::$heading = __('Latest Tickets by Due date');
     }
 
     public static function canView(): bool
@@ -31,6 +32,7 @@ class LatestTickets extends BaseWidget
     {
         return Ticket::query()
             ->limit(5)
+            ->where('status_id', '!=', 3)
             ->where(function ($query) {
                 return $query->where('owner_id', auth()->user()->id)
                     ->orWhere('responsible_id', auth()->user()->id)
@@ -41,6 +43,7 @@ class LatestTickets extends BaseWidget
                             });
                     });
             })
+            ->orderBy('target_date', 'asc')
             ->latest();
     }
 
@@ -66,7 +69,8 @@ class LatestTickets extends BaseWidget
                     . '</a>
                             <span class="text-sm text-gray-400">|</span> '
                     . $record->name . '
-                            <span class="text-sm text-gray-400">|</span> '.date('M d, Y', strtotime($record->target_date)).'
+                            <span class="text-sm text-gray-400">|</span> <span style="color: '.($record->target_date->gt(Carbon::today())) .'red;">'
+                    . date('M d, Y', strtotime($record->target_date)) .'</span>
                         </span>
                         ' . ($record->responsible ? '
                         <div class="flex items-center gap-3">

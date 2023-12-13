@@ -126,6 +126,7 @@ class ViewTicket extends ViewRecord implements HasForms
                     in_array(auth()->user()->id, [$this->record->owner_id, $this->record->responsible_id]) &&
                     (in_array($this->record->status_id, [4, 5]))
                 )
+                //->disabled() //
                 ->hidden(fn () => $this->record->owner_id != auth()->user()->id)
                 ->form([
                     Rating::make('rating')->required()
@@ -147,21 +148,27 @@ class ViewTicket extends ViewRecord implements HasForms
                         ->rows(3),
                 ])
                 ->action(function (Collection $records, array $data): void {
-
-                    if($this->record->hours()->where('is_reviewer', 1)->count()) {
-                        Ticket::where('id', $this->record->id)
-                            ->update([
-                                'rating' => $data['rating'],
-                                'review_comment' => $data['review_comment'],
-                                'status_id' => 3,
+                    if($this->record->hours->where('is_reviewer', 1)->count()) {
+                        if(TicketHour::where('ticket_id', $this->record->id)
+                            ->where('is_reviewer', 1)
+                            ->orderBy('id', 'desc')
+                            ->first()->status) {
+                            $this->notify('danger', __('Please start/stop review timer first'));
+                        } else {
+                            Ticket::where('id', $this->record->id)
+                                ->update([
+                                    'rating' => $data['rating'],
+                                    'review_comment' => $data['review_comment'],
+                                    'status_id' => 3,
+                                ]);
+                            TicketActivity::create([
+                                'user_id' => auth()->user()->id,
+                                'ticket_id' => $this->record->id,
+                                'old_status_id' => 5,
+                                'new_status_id' => 3,
                             ]);
-                        TicketActivity::create([
-                            'user_id' => auth()->user()->id,
-                            'ticket_id' => $this->record->id,
-                            'old_status_id' => 5,
-                            'new_status_id' => 3,
-                        ]);
-                        $this->notify('success', __('Review rating and comment saved'));
+                            $this->notify('success', __('Review rating and comment saved'));
+                        }
                     } else {
                         $this->notify('danger', __('Please start/stop review timer first'));
                     }

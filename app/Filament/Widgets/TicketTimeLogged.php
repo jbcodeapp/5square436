@@ -34,7 +34,7 @@ class TicketTimeLogged extends BarChartWidget
             $query->whereIn('responsible_id', [auth()->user()->id]);
         }
         $query->has('hours');
-        $query->limit(10);
+        $query->limit(10)->latest();
         return [
             'datasets' => [
                 [

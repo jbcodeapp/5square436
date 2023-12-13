@@ -2,6 +2,8 @@
 
 namespace App\Filament\Pages;
 
+use App\Filament\Resources\TicketResource\Widgets\DashboardTicketStatsOverview;
+use App\Filament\Widgets\DashboardRatingStatsOverview;
 use App\Filament\Widgets\FavoriteProjects;
 use App\Filament\Widgets\LatestActivities;
 use App\Filament\Widgets\LatestComments;
@@ -25,11 +27,13 @@ class Dashboard extends BasePage
     protected function getWidgets(): array
     {
         return [
-//            FavoriteProjects::class,
-//            LatestActivities::class,
-//            LatestComments::class,
-            LatestProjects::class,
+            DashboardRatingStatsOverview::class,
+            DashboardTicketStatsOverview::class,
             LatestTickets::class,
+//            FavoriteProjects::class,
+            LatestActivities::class,
+            LatestComments::class,
+            LatestProjects::class,
 //            TicketsByPriority::class,
 //            TicketsByType::class,
 //            TicketTimeLogged::class,

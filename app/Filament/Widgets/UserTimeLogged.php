@@ -29,7 +29,11 @@ class UserTimeLogged extends BarChartWidget
 
     protected function getData(): array
     {
+        $role = auth()->user()->roles->pluck('id');
         $query = User::query();
+        if($role[0] != 1) {
+            $query->whereIn('id', [auth()->user()->id]);
+        }
         $query->has('hours');
         $query->limit(10);
         return [

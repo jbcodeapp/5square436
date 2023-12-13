@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Exports\ProjectHoursExport;
 use App\Filament\Resources\ProjectResource\Pages;
 use App\Filament\Resources\ProjectResource\RelationManagers;
+use App\Filament\Resources\ProjectResource\Widgets\ProjectStatsOverview;
 use App\Models\Project;
 use App\Models\ProjectFavorite;
 use App\Models\ProjectStatus;
@@ -270,6 +271,13 @@ class ProjectResource extends Resource
             RelationManagers\SprintsRelationManager::class,
             RelationManagers\UsersRelationManager::class,
             RelationManagers\StatusesRelationManager::class,
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+          ProjectStatsOverview::class,
         ];
     }
 

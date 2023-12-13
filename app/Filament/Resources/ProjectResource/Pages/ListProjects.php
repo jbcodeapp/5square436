@@ -18,6 +18,13 @@ class ListProjects extends ListRecords
         ];
     }
 
+    protected function getHeaderWidgets(): array
+    {
+        return [
+          ProjectResource\Widgets\ProjectStatsOverview::class,
+        ];
+    }
+
     protected function getTableQuery(): Builder
     {
         return parent::getTableQuery()

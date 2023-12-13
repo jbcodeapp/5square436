@@ -8,8 +8,9 @@ use App\Models\TicketHour;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithPreCalculateFormulas;
 
-class TimesheetExport implements FromCollection, WithHeadings
+class TimesheetExport implements FromCollection, WithHeadings, WithPreCalculateFormulas
 {
     protected array $params;
 
@@ -49,7 +50,7 @@ class TimesheetExport implements FromCollection, WithHeadings
 //            ->whereBetween('created_at', [$this->params['start_date'], $this->params['end_date']])
 //            ->get();
 
-        $query = Ticket::query();
+        $query = Ticket::query()->where('status_id',3);
         $query->when($this->params['user_id'] != null, function ($q) {
             return $q->where('responsible_id', '=', $this->params['user_id']);
         });
@@ -59,7 +60,9 @@ class TimesheetExport implements FromCollection, WithHeadings
         $query->whereBetween('created_at', [$this->params['start_date'], $this->params['end_date']]);
         $hours = $query->get();
 
+        $my_rating = [];
         foreach ($hours as $item) {
+            $my_rating[] = $item->rating;
             $collection->push([
                 '#' => $item->code,
                 'ticket' => $item->name,
@@ -67,7 +70,7 @@ class TimesheetExport implements FromCollection, WithHeadings
 //                'details' => $item->content,
 
                 // review
-                'rating' => $item->rating." star",
+                'rating' => ($item->rating) ? $item->rating.' Star' : 0,
                 'review' => $item->review_comment,
 
                 // respoinsible
@@ -92,6 +95,16 @@ class TimesheetExport implements FromCollection, WithHeadings
             ]);
         }
 
-        return $collection;
+        $avg = (array_sum($my_rating) == 0 || count($hours)== 0)
+            ? 0
+            : number_format(array_sum($my_rating)/count($hours),2);
+
+        $extendedArr = [
+            $collection,
+            [' ',' ','Average rating:', $avg]
+        ];
+
+        return new Collection($extendedArr);
+       // return $collection;
     }
 }

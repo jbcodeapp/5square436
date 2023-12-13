@@ -78,6 +78,50 @@ class ViewCompletedTicket extends ViewRecord implements HasForms
 //                    $this->record->refresh();
 //                }),
 
+        //================  Review Ticket Update start ==================== //
+            Actions\Action::make('reviewTicketUpdate')
+                ->label(__('Update Review'))
+                ->icon('heroicon-o-bell')
+                ->color('warning')
+                ->modalWidth('sm')
+                ->modalHeading(__('Update your review for this ticket'))
+                ->modalSubheading('1) Timeliness 2) No Mistake and Error 3) Presentaion 4) Knowledge 5) Others')
+//                ->modalSubheading(__('1) Timeliness 2) No Mistake and Error 3) Presentaion 4) Knowledge 5) Others'))
+                ->modalButton(__('Submit'))
+                ->visible(fn() =>
+                    in_array(auth()->user()->id, [$this->record->owner_id]) &&
+                    (in_array($this->record->status_id, [3]))
+                )
+                ->hidden(fn () => $this->record->owner_id != auth()->user()->id)
+                ->form([
+                    Rating::make('rating')->required()
+                        ->effects(true),
+
+                    Textarea::make('review_comment')
+                        ->label(__('Review'))
+                        ->required()
+                        ->rows(3),
+                ])
+                ->action(function (Collection $records, array $data): void {
+                            Ticket::where('id', $this->record->id)
+                                ->update([
+                                    'rating' => $data['rating'],
+                                    'review_comment' => $data['review_comment'],
+                                    'status_id' => 3,
+                                ]);
+                            TicketActivity::create([
+                                'user_id' => auth()->user()->id,
+                                'ticket_id' => $this->record->id,
+                                'old_status_id' => 3,
+                                'new_status_id' => 3,
+                            ]);
+                            $this->notify('success', __('Review updated Successfully'));
+
+                    $this->record->refresh();
+                })
+                ->requiresConfirmation(),
+// ================ Review Ticket Update end ==================== //
+
 //  ================ Submit Ticket start==================== //
             Actions\Action::make('submitTicket')
                 ->label(__('Submit Ticket'))

@@ -116,7 +116,9 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     {
         return new Attribute(
             get: function () {
-                return $this->hours->sum('value');
+//                return $this->hours->sum('value');
+                $seconds = $this->hours->sum('value');
+                return sprintf('%d.%d', $seconds/3600, floor($seconds/60) % 60);
             }
         );
     }

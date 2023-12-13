@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TicketResource\Pages;
 
 use App\Filament\Resources\TicketResource;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Pages\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
@@ -10,6 +11,13 @@ use Illuminate\Database\Eloquent\Builder;
 class ListTickets extends ListRecords
 {
     protected static string $resource = TicketResource::class;
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            TicketResource\Widgets\TicketStatsOverview::class,
+        ];
+    }
 
     protected function shouldPersistTableFiltersInSession(): bool
     {

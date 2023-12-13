@@ -91,13 +91,13 @@ class TimesheetExport extends Page implements HasForms
             $fileName .= "_".str_replace(' ', '_', $projectname);;
         }
 
-        $fileName .= "_".date("d-m-Y", strtotime($data['start_date']))."_to_".date("d-m-Y", strtotime($data['end_date'])).'.csv';
+        $fileName .= "_".date("d-m-Y", strtotime($data['start_date']))."_to_".date("d-m-Y", strtotime($data['end_date'])).'.xlsx';
 
         return Excel::download(
             new \App\Exports\TimesheetExport($data),
             $fileName,
-            \Maatwebsite\Excel\Excel::CSV,
-            ['Content-Type' => 'text/csv']
+            \Maatwebsite\Excel\Excel::XLSX,
+//            ['Content-Type' => 'text/csv']
         );
     }
 }
