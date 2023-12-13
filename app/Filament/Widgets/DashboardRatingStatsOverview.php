@@ -24,7 +24,10 @@ class DashboardRatingStatsOverview extends BaseWidget
                 ->where('responsible_id', auth()->user()->id)
                 ->pluck('rating', 'id')->toArray();
         }
-        $avg = number_format(array_sum($tickets)/count($tickets),2);
+        $avg = (array_sum($tickets) == 0 || count($tickets)== 0)
+            ? 0
+            : number_format(array_sum($tickets)/count($tickets),2);
+
         if($avg<=3){
             $msg = 'Need to Improve Performance !!';
             $color = 'danger';
