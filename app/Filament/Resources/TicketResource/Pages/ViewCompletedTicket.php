@@ -89,10 +89,10 @@ class ViewCompletedTicket extends ViewRecord implements HasForms
 //                ->modalSubheading(__('1) Timeliness 2) No Mistake and Error 3) Presentaion 4) Knowledge 5) Others'))
                 ->modalButton(__('Submit'))
                 ->visible(fn() =>
-                    in_array(auth()->user()->id, [$this->record->owner_id, 1]) &&
+                    in_array(auth()->user()->id, [$this->record->owner_id]) &&
                     (in_array($this->record->status_id, [3]))
                 )
-                ->hidden(fn () => $this->record->owner_id != auth()->user()->id || $this->record->owner_id != 1)
+                ->hidden(fn () => $this->record->owner_id != auth()->user()->id)
                 ->form([
                     Rating::make('rating')->required()
                         ->effects(true),
