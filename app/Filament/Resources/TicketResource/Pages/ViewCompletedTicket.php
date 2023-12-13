@@ -92,7 +92,8 @@ class ViewCompletedTicket extends ViewRecord implements HasForms
                     in_array(auth()->user()->id, [$this->record->owner_id, 1]) &&
                     (in_array($this->record->status_id, [3]))
                 )
-                ->hidden(fn () => $this->record->owner_id != auth()->user()->id)
+//                ->hidden(fn () => $this->record->owner_id != auth()->user()->id)
+                ->hidden(fn () => in_array(auth()->user()->id, [$this->record->owner_id, 1]))
                 ->form([
                     Rating::make('rating')->required()
                         ->effects(true),
