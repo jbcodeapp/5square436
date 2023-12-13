@@ -36,3 +36,10 @@ Route::name('oidc.')
         Route::get('redirect', [OidcAuthController::class, 'redirect'])->name('redirect');
         Route::get('callback', [OidcAuthController::class, 'callback'])->name('callback');
     });
+
+Route::prefix('attachment')->name('attachment')
+    ->group(function () {
+        Route::controller(\App\Http\Controllers\AttachmentsController::class)->group(function () {
+            Route::get('download/{media}', 'attachment_download')->name('download');
+        });
+    });

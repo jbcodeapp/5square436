@@ -7,6 +7,7 @@ use Filament\Facades\Filament;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -14,6 +15,7 @@ use Filament\Tables\Contracts\HasTable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Attachments extends Component implements HasForms, HasTable
 {
@@ -83,21 +85,27 @@ class Attachments extends Component implements HasForms, HasTable
                 ->sortable()
                 ->searchable(),
 
-            TextColumn::make('mime_type')
-                ->label(__('Mime type'))
-                ->sortable()
-                ->searchable(),
+//            TextColumn::make('mime_type')
+//                ->label(__('Mime type'))
+//                ->sortable()
+//                ->searchable(),
         ];
     }
 
     protected function getTableActions(): array
     {
         return [
+            Action::make('download')
+                ->label('Download')
+                ->url(
+                    fn (Media $record): string => route('attachmentdownload', ['media' => $record]),
+                    shouldOpenInNewTab: true
+                ),
             DeleteAction::make()
                 ->action(function ($record) {
                     $record->delete();
                     Filament::notify('success', __('Ticket attachment deleted'));
-                })
+                }),
         ];
     }
 }
