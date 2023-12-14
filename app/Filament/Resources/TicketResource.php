@@ -291,8 +291,8 @@ class TicketResource extends Resource
         $columns = array_merge($columns, [
             Tables\Columns\TextColumn::make('name')
                 ->label(__('Ticket name'))
-                ->sortable(),
-//                ->searchable(isIndividual: true),
+                ->sortable()
+                ->searchable(),
 
 //            RatingColumn::make('rating'),
 
