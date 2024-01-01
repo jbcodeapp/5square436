@@ -12,6 +12,16 @@ Route::get('/tickets/share/{ticket:code}', function (Ticket $ticket) {
     return redirect()->to(route('filament.resources.tickets.view', $ticket));
 })->name('filament.resources.tickets.share');
 
+Route::post('monthly/cron/run', function () {
+    if (auth()->user()->id == 1) {
+        $artisan = Artisan::call('monthly:task_copy');
+        \Filament\Facades\Filament::notify('success', 'Ticket copy task run successfully', true);
+    } else {
+        \Filament\Facades\Filament::notify('error', 'You are not authorised to call this event', true);
+    }
+    return redirect()->back();
+})->name('monthly.cron.run');
+
 // Validate an account
 Route::get('/validate-account/{user:creation_token}', function (User $user) {
     return view('validate-account', compact('user'));

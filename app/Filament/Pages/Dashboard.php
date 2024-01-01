@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Filament\Resources\TicketResource\Widgets\DashboardTicketStatsOverview;
+use App\Filament\Widgets\CronWidget;
 use App\Filament\Widgets\DashboardRatingStatsOverview;
 use App\Filament\Widgets\FavoriteProjects;
 use App\Filament\Widgets\LatestActivities;
@@ -14,6 +15,7 @@ use App\Filament\Widgets\TicketsByType;
 use App\Filament\Widgets\TicketTimeLogged;
 use App\Filament\Widgets\UserTimeLogged;
 use Filament\Pages\Dashboard as BasePage;
+use Filament\Widgets\AccountWidget;
 
 class Dashboard extends BasePage
 {
@@ -21,12 +23,14 @@ class Dashboard extends BasePage
 
     protected function getColumns(): int | array
     {
-        return 1;
+        return 2;
     }
 
     protected function getWidgets(): array
     {
         return [
+            AccountWidget::class,
+            CronWidget::class,
             DashboardRatingStatsOverview::class,
             DashboardTicketStatsOverview::class,
             LatestTickets::class,
