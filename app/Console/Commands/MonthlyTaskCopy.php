@@ -32,11 +32,9 @@ class MonthlyTaskCopy extends Command
     {
         $tickets = Ticket::where('is_repeat',1)
             ->get();
-        Log::debug("tickets : ".json_encode($tickets));
         $addname = "(".date('My').")";
 //        $newEntry = [];
         foreach ($tickets as $i => $ticket){
-            Log::debug('tt : '. json_encode($ticket));
             $newRecord = $ticket->replicate();
             $newRecord->name = $ticket->name." ".$addname;
             $newRecord->is_repeat = 0;
@@ -46,7 +44,6 @@ class MonthlyTaskCopy extends Command
             $newRecord->target_date = $ticket->target_date->addMonth();
             $newRecord->reviewer_target_date = $ticket->reviewer_target_date->addMonth();
             $newRecord->created_at = Carbon::now()->format('Y-m-d H:i:s');
-            Log::debug(json_encode($newRecord));
             $newRecord->save();
             if ($i > 0 && $i % 10 == 0) {
                 sleep(2); // sleep for 2 sec
