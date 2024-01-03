@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Ticket;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class MonthlyTaskCopy extends Command
 {
@@ -43,6 +44,7 @@ class MonthlyTaskCopy extends Command
             $newRecord->target_date = $ticket->target_date->addMonth();
             $newRecord->reviewer_target_date = $ticket->reviewer_target_date->addMonth();
             $newRecord->created_at = Carbon::now()->format('Y-m-d H:i:s');
+            Log::debug(json_encode($newRecord));
             $newRecord->save();
             if ($i > 0 && $i % 10 == 0) {
                 sleep(2); // sleep for 2 sec
