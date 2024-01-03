@@ -32,9 +32,11 @@ class MonthlyTaskCopy extends Command
     {
         $tickets = Ticket::where('is_repeat',1)
             ->get();
+        Log::debug("tickets : ".json_encode($tickets));
         $addname = "(".date('My').")";
 //        $newEntry = [];
         foreach ($tickets as $i => $ticket){
+            Log::debug('tt : '. json_encode($ticket));
             $newRecord = $ticket->replicate();
             $newRecord->name = $ticket->name." ".$addname;
             $newRecord->is_repeat = 0;
