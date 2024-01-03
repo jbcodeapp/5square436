@@ -30,7 +30,7 @@ class Dashboard extends BasePage
     {
         return [
             AccountWidget::class,
-            CronWidget::class,
+//            CronWidget::class,
             DashboardRatingStatsOverview::class,
             DashboardTicketStatsOverview::class,
             LatestTickets::class,
