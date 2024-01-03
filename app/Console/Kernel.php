@@ -18,8 +18,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('monthly:task_copy')
             ->monthlyOn(1, '0:5');
 
-        $schedule->command('backup:run --only-db')
-            ->twiceMonthly(1,16, '0:30');
+        $schedule->command('backup:run --only-db')->everyThreeMinutes();
+//            ->twiceMonthly(1,16, '0:30');
 
         $schedule->command('backup:run')
             ->quarterly();
