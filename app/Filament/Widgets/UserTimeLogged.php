@@ -81,7 +81,7 @@ class UserTimeLogged extends BarChartWidget
                 DB::raw('DAY(created_at) As date, SUM(value)/3600 AS total_time')
             );
             $query->whereBetween('start_time', [$from, $to]);
-            $query->where('user_id', 3);
+            $query->where('user_id', 4);
             $query->orderBy('date');
             $query->groupBy(DB::raw('DAY(created_at)'));
 
