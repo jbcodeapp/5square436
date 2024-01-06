@@ -4,6 +4,7 @@ namespace App\Filament\Pages;
 
 use App\Filament\Resources\TicketResource\Widgets\DashboardTicketStatsOverview;
 use App\Filament\Widgets\CronWidget;
+use App\Filament\Widgets\DailyTimeLoggedChart;
 use App\Filament\Widgets\DashboardRatingStatsOverview;
 use App\Filament\Widgets\FavoriteProjects;
 use App\Filament\Widgets\LatestActivities;
@@ -41,7 +42,8 @@ class Dashboard extends BasePage
 //            TicketsByPriority::class,
 //            TicketsByType::class,
 //            TicketTimeLogged::class,
-//            UserTimeLogged::class
+            UserTimeLogged::class,
+            DailyTimeLoggedChart::class,
         ];
     }
 }
