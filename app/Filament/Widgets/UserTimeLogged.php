@@ -90,12 +90,12 @@ class UserTimeLogged extends BarChartWidget
             $label[] = $day->date;
             $data[] = number_format($day->total_time,2,'.');
         }
-//        dd( $data, $label);
+//        dd( count($data), $label);
 
         return [
             'datasets' => [
                 [
-                    'label' => __('Total time logged (hours)'),
+                    'label' => __('Working Days ('.count($label).') | Total Working Hours('.array_sum($data).')'),
 //                    'data' => $query->get()->pluck('totalLoggedInHours')->toArray(),
 //                    'data' => [0, 10, 5, 2, 21, 32, 45, 74, 65, 45, 77, 89],
 //                    'data' => [0, 5.6, 5, 2, 7, 6.4, 4, 3, 2, 7, 8, 7],
