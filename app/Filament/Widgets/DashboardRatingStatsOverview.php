@@ -10,6 +10,11 @@ use Filament\Widgets\StatsOverviewWidget\Card;
 class DashboardRatingStatsOverview extends BaseWidget
 {
     protected static ?string $pollingInterval= null;
+    protected int|string|array $columnSpan = [
+        'sm' => 1,
+        'md' => 6,
+        'lg' => 1
+    ];
     protected function getCards(): array
     {
         if(auth()->user()->id == 1){
