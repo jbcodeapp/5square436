@@ -15,7 +15,7 @@ class PermissionsSeeder extends Seeder
     private array $modules = [
         'permission', 'project', 'project status', 'role', 'ticket',
         'ticket priority', 'ticket status', 'ticket type', 'user',
-        'activity', 'sprint'
+        'activity', 'sprint', 'notice'
     ];
 
     private array $pluralActions = [
@@ -77,5 +77,8 @@ class PermissionsSeeder extends Seeder
         if ($user = User::first()) {
             $user->syncRoles([$this->defaultRole]);
         }
+
+//        TODO: add employee and client role with permission
+
     }
 }
