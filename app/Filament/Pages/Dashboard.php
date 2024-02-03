@@ -44,7 +44,7 @@ class Dashboard extends BasePage
 //            TicketsByPriority::class,
 //            TicketsByType::class,
 //            TicketTimeLogged::class,
-//            UserTimeLogged::class,
+            UserTimeLogged::class,
 //            DailyTimeLoggedChart::class,
         ];
     }
