@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Filament\Pages;
 
+use App\Filament\Widgets\UserTimeLogged;
 use App\Models\Project;
+use App\Models\TicketStatus;
 use App\Models\User;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Grid;
@@ -28,6 +30,20 @@ class TimesheetExport extends Page implements HasForms
 
     protected static string $view = 'filament.pages.timesheet-export';
     protected static bool $shouldRegisterNavigation = true;
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+//            UserTimeLogged::class,
+        ];
+    }
+
+//    protected function getHeaderWidgets(): array
+//    {
+//        return [
+//          UserTimeLogged::class,
+//        ];
+//    }
 
 
     protected static function getNavigationGroup(): ?string
@@ -72,6 +88,11 @@ class TimesheetExport extends Page implements HasForms
                             ->label(__('Project'))
                             ->searchable()
                             ->options(Project::all()->pluck('name', 'id')->toArray()),
+
+                        Select::make('status_id')
+                            ->label(__('Status'))
+                            ->searchable()
+                            ->options(['All' => 0] + TicketStatus::all()->pluck('name', 'id')->toArray()),
                     ])
             ])
         ];

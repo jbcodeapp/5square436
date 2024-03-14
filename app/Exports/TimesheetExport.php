@@ -50,7 +50,14 @@ class TimesheetExport implements FromCollection, WithHeadings, WithPreCalculateF
 //            ->whereBetween('created_at', [$this->params['start_date'], $this->params['end_date']])
 //            ->get();
 
-        $query = Ticket::query()->where('status_id',3);
+        $query = Ticket::query();
+
+        $query->when($this->params['status_id'] != null, function ($q) {
+            if($this->params['status_id'] == '' || $this->params['status_id'] == 0){
+                return $q->whereIn('status_id', '=', [1,2,3,4,5]);
+            }
+            return $q->where('status_id', '=', $this->params['status_id']);
+        });
         $query->when($this->params['user_id'] != null, function ($q) {
             return $q->where('responsible_id', '=', $this->params['user_id']);
         });
