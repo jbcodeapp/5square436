@@ -31,6 +31,12 @@ class TimesheetExport extends Page implements HasForms
     protected static string $view = 'filament.pages.timesheet-export';
     protected static bool $shouldRegisterNavigation = true;
 
+    protected static function shouldRegisterNavigation(): bool
+    {
+//        return auth()->user()->can('List roles');
+        return (auth()->user()->roles[0]->id == 1);
+    }
+
     protected function getFooterWidgets(): array
     {
         return [
